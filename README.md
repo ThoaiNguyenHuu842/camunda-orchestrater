@@ -1,6 +1,6 @@
 # Introduction
 
-This project implemented a demo using Camunda as an orchestrater in micro-services environment with an KYC process example. 
+This project implementes a demo using Camunda as an orchestrater in micro-services environment with an KYC process example. 
 This project simulates an micro-service based system with four services: 
 - Request management service
 - Verification service
