@@ -1,35 +1,45 @@
 # Introduction
 
-This project implementes a demo using Camunda as an orchestrater in micro-services environment with an KYC process example. 
-This project simulates an micro-service based system with four services: 
-- Request management service
-- Verification service
-- Account management service
-- Orchestrater service
-Each service contains some REST APIs implemented at _src/main/java/com/thoainguyen/rest_
+Hystrix is a library that controls the interaction between microservices to provide latency and fault tolerance. 
+Hystrix implements Circuit breaker which is a pattern that wraps requests to external services and detects when they fail.
+We will demonstrate how hystrix is applied in a microservices system via this project. 
 
-![img.png](img.png)
-
-
+This project is a home loaning service which consume a KYC service to verify customers by the username. You can
+imagine these services are in a banking microservices-based system which can contain a lot of other services.
+  
 ## Tech stack
 
-JDK 11, Gradle, Spring boot, Spring Feign, Spring Camunda Web app
+JDK 11, Gradle, Spring boot, Spring Feign, Hystrix
+
+We will use Spring Feign to make RESTful requests to the KYC service and integrate Hystrix into our service. The source
+code is really straightforward, the **VerificationServiceClient** makes request to the KYC API which is consumed by the
+**VerificationUserService** in order to return the verification result to customers via **VerificationUserEndpoint**.
+
+Hystrix is enabled and configured via _application.yml_ with some default configurations:
+```shell
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 3000
+      circuitBreaker:
+        requestVolumeThreshold: 5
+        sleepWindowInMilliseconds: 2000
+        errorThresholdPercentage: 40
+```
+We will write an integration test (**VerificationServiceClientTest**) to verify how Hystrix works by a few scenarios.
 
 ## How to get started?
-You can easily start this project via below gradle commands:
+We can start this project via below gradle commands:
 ```shell
 gradle build
 gradle bootRun
 ```
-The KYC process is stored at _src/main/resources/kyc.bpmn_, after starting this project, the kyc.bpmn will be deployed to Camunda automatically together
-with Camunda tools: TaskList, Cockpit and Admin. 
+To run the integration test
+```shell
+gradle build
+gradle test
+```
 
-Each task in the KYC bpmn is mapped with a Java service in _src/main/java/com/thoainguyen/service which calls an API requests to corresponding service
-using Spring Feign.
-
-You can access to Camunda TaskList to start a process http://localhost:8080/camunda/app/tasklist/default/#. 
-Then click Start process button on the header menu and select kcy process. 
-It will ask you input a business key which is the user name need to be verified. 
-
-If you enter **'thoainguyen'**, the process will go to the sucess flow to onboard new customer and approve the request.
-Otherwise, it will go to the reject flow.

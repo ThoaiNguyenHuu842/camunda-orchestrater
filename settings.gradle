@@ -5,4 +5,4 @@ pluginManagement {
 		gradlePluginPortal()
 	}
 }
-rootProject.name = 'camunda-orchestrater'
+rootProject.name = 'hystrix-circuit-breaker'

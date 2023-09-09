@@ -1,5 +1,19 @@
-spring.datasource.url: jdbc:h2:file:./camunda-h2-database
+key-service:
+  url: localhost:8082
 
-camunda.bpm.admin-user:
-  id: demo
-  password: demo
+
+feign:
+  hystrix:
+    enabled: true
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 3000
+      circuitBreaker:
+        requestVolumeThreshold: 5
+        sleepWindowInMilliseconds: 2000
+        errorThresholdPercentage: 40

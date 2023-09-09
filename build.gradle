@@ -5,7 +5,7 @@ plugins {
 	id 'io.freefair.lombok' version '5.0.0'
 }
 
-group = 'guru.springframework'
+group = 'hystrix-circuit-breaker'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
@@ -19,11 +19,13 @@ ext {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-hystrix'
+	implementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+	implementation 'io.github.resilience4j:resilience4j-circuitbreaker:1.7.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	implementation 'org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-webapp:7.16.0'
-	implementation 'com.h2database:h2:2.1.214'
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-	implementation('org.springframework.cloud:spring-cloud-starter-openfeign')
+	testImplementation 'com.github.tomakehurst:wiremock:2.27.2'
+	testImplementation 'com.github.tomakehurst:wiremock-jre8:2.33.2'
 }
 
 dependencyManagement {
@@ -34,4 +36,7 @@ dependencyManagement {
 
 test {
 	useJUnitPlatform()
+	testLogging {
+		events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+	}
 }
